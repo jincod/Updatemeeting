@@ -1,12 +1,12 @@
 var express = require('express'),
-	//nodemailer = require("nodemailer"),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    expressValidator = require('express-validator');
 
 var app = express();
 app.set('views', __dirname + '/views');
-//app.set('view engine', 'jade')
 app.engine('html', require('ejs').renderFile);
 app.use(express.bodyParser());
+app.use(expressValidator);
 app.use(express.logger('dev'));
 app.use(express.static(__dirname + '/public'));
 
@@ -24,7 +24,6 @@ var User = new Schema({
 
 var UserModel = mongoose.model('User', User);
 
-
 app.get('/', function (request, respond) {	
 	respond.render("index.html");
 });
@@ -40,6 +39,11 @@ app.get('/users', auth, function (request, respond){
 });
 
 app.post('/subscribe', function (request, respond){
+	request.check('email', 'Please enter a valid email').len(6,64).isEmail();
+	if(request.validationErrors()){
+		respond.redirect(400, '/');
+	}
+
 	var email = request.param('email');
 	var user = UserModel.find({ email : email }, function (err, user){
 		if(!user.length) {
@@ -52,7 +56,7 @@ app.post('/subscribe', function (request, respond){
 				}
 			});
 		}
-	});	
+	});
 	respond.redirect('/');
 });
 
