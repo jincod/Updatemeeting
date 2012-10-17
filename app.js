@@ -27,7 +27,9 @@ var User = new Schema({
 var UserModel = mongoose.model('User', User);
 
 app.get('/', function (request, respond) {	
-	respond.render("index.html");
+	respond.render("index.html",{
+		production : process.env.PRODUCTION || false
+	});
 });
 
 app.get('/users', auth, function (request, respond){	
