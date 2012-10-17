@@ -19,7 +19,8 @@ var Schema = mongoose.Schema;
 
 var User = new Schema({  
     email: { type: String, required: true, unique: true },
-    created: { type: Date, default: Date.now }
+    created: { type: Date, default: Date.now },
+    confirmed: { type: Boolean, default: false }
 });
 
 var UserModel = mongoose.model('User', User);
@@ -70,6 +71,25 @@ app.get('/unsubscribe/:id', function (request, respond){
 		}
 	});
 	respond.redirect('/');
+});
+
+app.get('/confirm/:id', auth, function (request, respond){
+	var id = request.param('id');
+	
+	UserModel.findById(id, function (err, user) {
+	    if (!err) {
+	    	if(user && !user.confirmed) {
+				UserModel.update({_id : id}, { confirmed : true}, function (err){
+					err && console.log(err);
+				});
+				respond.send('Спасибо! Email подтвержден. <a href="/">На главную</a>');
+				return;
+			}
+	    	respond.redirect('/');
+	    } else {
+	  		return console.log(err);
+	    }
+    });	
 });
 
 var port = process.env.PORT || 3000;
