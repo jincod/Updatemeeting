@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Update Meeting</title>
 		<link href="http://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
 		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -14,38 +15,40 @@
 			  font-size: 18px;
 			  line-height: 26px;
 			}
-			h1, h2 {
-			  border-bottom: 1px solid #ddd;
-			  font-family: "Lobster";
-			  font-size: 100px;
-			  font-weight: normal;
-			  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
-			}
-			h1 {
+			h1 {				
 			  color: #EF5150;
+			  font-family: "Lobster";
 			  font-weight: bold;
+			  font-size: 120px;
+			  line-height: 1;
 			  margin: 0 0 3px 0;
 			  padding: 40px	0 50px 0;
+			}			
+			@media (max-width: 480px) {
+				h1 { font-size: 70px; }
 			}
-			#center {
-				top: 50%;
-				left: 50%;
-				position: absolute;
+			.center {
 				text-align: center;
-				width: 700px;
-				height: 400px;
-				margin-left: -350px;
-				margin-top: -200px;
 			}
-			form {margin: 90px 0 0 0;}
+			.main {
+				padding-top: 70px;
+			}
+			.main p {font-size: 26px;}
+			form {margin: 80px 0 0 0;}
+			.menu {margin-top: 40px;}
+			.menu a {margin-left: 15px;}
 			.share div{display: inline-block;}
 		</style>
 	</head>
 	<body>
-		<div id="center">
-			<div>
+		<div class="main center">
+			<div class="container">			
 				<h1>Update Meeting</h1>
-				<span>Несколько коротких докладов</span>
+				<p>Несколько коротких докладов</p>
+				<span class="menu">
+					<a href="http://updatemeeting.tumblr.com">Blog</a>
+					<a href="mailto:updatemeeting@gmail.com">Email</a>
+				</span>
 				<form class="form-inline" method="post" action="/subscribe">					
 					<div class="control-group">
 						<div class="controls">
@@ -58,15 +61,17 @@
 					</div>
 				</form>
 			</div>
-			<div class="share">				
+		</div>
+		<div class="share center">				
+			<div class="container">
 				<div class="tw">
 					<a href="https://twitter.com/share" class="twitter-share-button" data-text="#updatemeeting">Tweet</a>
 					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 				</div>
-				<div class="vk"></div>				
-				<div class="fb"></div>				
+				<div class="vk"></div>
+				<div class="fb"></div>
 			</div>
-		</div>		
+		</div>
 		<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.8.2.min.js"></script>
 		<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>	
 		<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/localization/messages_ru.js"></script>
