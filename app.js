@@ -1,6 +1,7 @@
 var express = require('express'),
     mongoose = require('mongoose'),
-    expressValidator = require('express-validator');
+    expressValidator = require('express-validator'),
+    Mailgun = require('mailgun').Mailgun;
 
 var app = express();
 app.set('views', __dirname + '/views');
@@ -46,11 +47,12 @@ app.post('/subscribe', function (request, respond){
 	}
 
 	var email = request.param('email');
-	var user = UserModel.find({ email : email }, function (err, user){
+	UserModel.find({ email : email }, function (err, user){
 		if(!user.length) {
 			var newUser = new UserModel({ email: email });
 			newUser.save(function (err) {
 				if (!err) {
+					sendConfirmingEmail(email, newUser._id);
 					return console.log("created");
 				} else {
 					return console.log(err);
@@ -73,7 +75,7 @@ app.get('/unsubscribe/:id', function (request, respond){
 	respond.redirect('/');
 });
 
-app.get('/confirm/:id', auth, function (request, respond){
+app.get('/confirm/:id', function (request, respond){
 	var id = request.param('id');
 	
 	UserModel.findById(id, function (err, user) {
@@ -91,6 +93,24 @@ app.get('/confirm/:id', auth, function (request, respond){
 	    }
     });	
 });
+
+var sendConfirmingEmail = function (email, id) {
+	if(!process.env.MAILGUN_API_KEY)
+		return;
+
+	var mg = new Mailgun(process.env.MAILGUN_API_KEY);
+
+	mg.sendRaw('Update Meeting <updatemeeting@gmail.com>', email,
+        'From: Update Meeting <updatemeeting@gmail.com>' +
+          '\nTo: ' + email +
+          '\nContent-Type: text/html; charset=utf-8' +
+          '\nSubject: Проверочное сообщение UpdateMeeting' +
+          '\n\nДобро пожаловать! Пожалуйста, подтвердите свой адрес: <a href="http://updatemeeting.apphb.com/confirm/'+ id +'">Подтвердить</a>',
+        function(err) {
+		    if (err) console.log('Oh noes: ' + err);
+		    else     console.log('Success');
+	});
+};
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
