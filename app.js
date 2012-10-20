@@ -32,6 +32,23 @@ app.get('/', function (request, respond) {
 	});
 });
 
+app.get('/event', auth, function (request, respond) {	
+	respond.render("event.html");
+});
+
+app.post('/event', auth, function (request, respond){
+	var subject = request.param('subject');
+	var emailtext = request.param('emailtext');
+	UserModel.find({ confirmed : true }, 'email', function (err, users){
+		var emails = [];
+		for(var i in users){
+			emails.push(users[i].email);
+		}
+		sendAnnonceEmail(subject, emailtext, emails);
+		respond.send('Уведомления отправлены! <a href="/">На главную</a>');
+	});	
+});
+
 app.get('/users', auth, function (request, respond){	
 	return UserModel.find(function (err, users) {
 	    if (!err) {
@@ -112,6 +129,27 @@ var sendConfirmingEmail = function (email, id) {
 		    if (err) console.log('Oh noes: ' + err);
 		    else     console.log('Success');
 	});
+};
+
+var sendAnnonceEmail = function (subject, emailtext, emails) {
+	if(!process.env.MAILGUN_API_KEY)
+		return;
+
+	var mg = new Mailgun(process.env.MAILGUN_API_KEY);
+
+	for(var i in emails){
+		var email = emails[i];
+		mg.sendRaw('Update Meeting <updatemeeting@gmail.com>', email,
+	        'From: Update Meeting <updatemeeting@gmail.com>' +
+	          '\nTo: ' + email +
+	          '\nContent-Type: text/html; charset=utf-8' +
+	          '\nSubject: ' + subject +
+	          '\n\n' + emailtext,
+	        function(err) {
+			    if (err) console.log('Oh noes: ' + err);
+			    else     console.log('Success');
+		});
+	}	
 };
 
 var port = process.env.PORT || 3000;
