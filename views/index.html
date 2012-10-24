@@ -34,9 +34,8 @@
 				padding-top: 70px;
 			}
 			.main p {font-size: 26px;}
+			.annonce {margin-top: 40px;}
 			form {margin: 80px 0 0 0;}
-			.menu {margin-top: 40px;}
-			.menu a {margin-left: 15px;}
 			.share {display: inline-block;}
 		</style>
 		<script type="text/javascript" src="http://vk.com/js/api/share.js?11" charset="windows-1251"></script>
@@ -47,10 +46,7 @@
 			<div class="container">			
 				<h1>Update Meeting</h1>
 				<p>Несколько коротких докладов</p>
-				<span class="menu">
-					<a href="http://updatemeeting.tumblr.com">Blog</a>
-					<a href="mailto:updatemeeting@gmail.com">Email</a>
-				</span>
+				<p class="annonce">&nbsp;<!-- <a href="http://updatemeeting.tumblr.com">Blog</a> --></p>
 				<form class="form-inline" method="post" action="/subscribe">					
 					<div class="control-group">
 						<div class="controls">
@@ -96,33 +92,20 @@
 						$(element).closest(".control-group").removeClass("error");
 					}
 				});
+				var target = $(".annonce");
+				$.ajax({
+					url: "http://api.tumblr.com/v2/blog/updatemeeting.tumblr.com/posts?api_key=IpyPBndM8jXt62LWHdD5j11PPM1HtSX4PAXreNpSn1d6A3cr0X&limit=1", 
+					dataType: "jsonp",
+					jsonp: "&jsonp",
+					success: function (data) {
+						target.html('<a href="' + data.response.posts[0].post_url + '">'+data.response.posts[0].title + '</a>');
+					}
+				});
 			});
 		</script>
 		<% if(production) {
 			%>
-				<!-- Yandex.Metrika counter -->
-				<script type="text/javascript">
-				(function (d, w, c) {
-				    (w[c] = w[c] || []).push(function() {
-				        try {
-				            w.yaCounter17724679 = new Ya.Metrika({id:17724679, enableAll: true});
-				        } catch(e) { }
-				    });
-				    
-				    var n = d.getElementsByTagName("script")[0],
-				        s = d.createElement("script"),
-				        f = function () { n.parentNode.insertBefore(s, n); };
-				    s.type = "text/javascript";
-				    s.async = true;
-				    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
-
-				    if (w.opera == "[object Opera]") {
-				        d.addEventListener("DOMContentLoaded", f);
-				    } else { f(); }
-				})(document, window, "yandex_metrika_callbacks");
-				</script>
-				<noscript><div><img src="//mc.yandex.ru/watch/17724679" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-				<!-- /Yandex.Metrika counter -->
+				<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter17724679 = new Ya.Metrika({id:17724679, enableAll: true, webvisor:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/17724679" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
 			<%
 		} %>		
 	</body>
