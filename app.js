@@ -1,7 +1,8 @@
 var express = require('express'),
     mongoose = require('mongoose'),
     expressValidator = require('express-validator'),
-    Mailgun = require('mailgun').Mailgun;
+    emailService = require('./email-service').EmailService,
+    EmailService = new emailService();
 
 var app = express();
 app.set('views', __dirname + '/views');
@@ -44,7 +45,7 @@ app.post('/event', auth, function (request, respond){
 		for(var i in users){
 			emails.push(users[i].email);
 		}
-		sendAnnonceEmail(subject, emailtext, emails);
+		EmailService.sendAnnonceEmail(subject, emailtext, emails);
 		respond.send('Уведомления отправлены! <a href="/">На главную</a>');
 	});	
 });
@@ -71,7 +72,7 @@ app.post('/subscribe', function (request, respond){
 			var newUser = new UserModel({ email: email });
 			newUser.save(function (err) {
 				if (!err) {
-					sendConfirmingEmail(email, newUser._id);
+					EmailService.sendConfirmingEmail(email, newUser._id);
 					return console.log("created");
 				} else {
 					return console.log(err);
@@ -112,45 +113,6 @@ app.get('/confirm/:id', function (request, respond){
 	    }
     });	
 });
-
-var sendConfirmingEmail = function (email, id) {
-	if(!process.env.MAILGUN_API_KEY)
-		return;
-
-	var mg = new Mailgun(process.env.MAILGUN_API_KEY);
-
-	mg.sendRaw('Update Meeting <updatemeeting@gmail.com>', email,
-        'From: Update Meeting <updatemeeting@gmail.com>' +
-          '\nTo: ' + email +
-          '\nContent-Type: text/html; charset=utf-8' +
-          '\nSubject: Проверочное сообщение UpdateMeeting' +
-          '\n\nДобро пожаловать! Пожалуйста, подтвердите свой адрес: <a href="http://updatemeeting.apphb.com/confirm/'+ id +'">Подтвердить</a>',
-        function(err) {
-		    if (err) console.log('Oh noes: ' + err);
-		    else     console.log('Success');
-	});
-};
-
-var sendAnnonceEmail = function (subject, emailtext, emails) {
-	if(!process.env.MAILGUN_API_KEY)
-		return;
-
-	var mg = new Mailgun(process.env.MAILGUN_API_KEY);
-
-	for(var i in emails){
-		var email = emails[i];
-		mg.sendRaw('Update Meeting <updatemeeting@gmail.com>', email,
-	        'From: Update Meeting <updatemeeting@gmail.com>' +
-	          '\nTo: ' + email +
-	          '\nContent-Type: text/html; charset=utf-8' +
-	          '\nSubject: ' + subject +
-	          '\n\n' + emailtext,
-	        function(err) {
-			    if (err) console.log('Oh noes: ' + err);
-			    else     console.log('Success');
-		});
-	}	
-};
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
