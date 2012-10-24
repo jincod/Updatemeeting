@@ -6,6 +6,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Update Meeting</title>
 		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap-combined.min.css" rel="stylesheet">
+		<style>
+			.preview {
+				-webkit-border-radius: 5px;
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				border: 2px solid;
+				padding: 5px;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="container">
@@ -23,7 +32,9 @@
 					</div>
 				</div>
 				<button type="submit" class="btn">Send</button>
+				<div class="btn btn-primary js-preview-click">Preview</div>
 			</form>
+			<div class="js-preview"></div>
 		</div>
 		<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.8.2.min.js"></script>
 		<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>	
@@ -44,7 +55,13 @@
 						$(element).closest(".control-group").removeClass("error");
 					}
 				});
+				$(".js-preview-click").click(function(){
+					var text = $("textarea").val();
+					$(".js-preview").html(text).addClass("preview");
+					return false;
+				});
 			});
 		</script>		
 	</body>
+</html>
 </html>
